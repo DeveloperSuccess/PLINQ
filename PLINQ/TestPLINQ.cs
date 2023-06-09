@@ -27,14 +27,46 @@ namespace PLINQ
             _delays = delays;
         }
 
-        public void StartTest()
+        public void StartTest(int nestingAsParallel = 1)
         {
             var stopwatch = Stopwatch.StartNew();
-            Result = _parallelismDegrees.AsParallel()
+
+            if (nestingAsParallel == 0)
+            {
+                Result = _parallelismDegrees
                 .SelectMany(degreeParallelism => _rangeLimits
                 .SelectMany(rangeLimit => _delays
                 .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))))
                 .ToList();
+            }
+
+            if (nestingAsParallel == 1)
+            {
+                Result = _parallelismDegrees.AsParallel()
+                .SelectMany(degreeParallelism => _rangeLimits
+                .SelectMany(rangeLimit => _delays
+                .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))))
+                .ToList();
+            }
+
+            if (nestingAsParallel == 2)
+            {
+                Result = _parallelismDegrees.AsParallel()
+                .SelectMany(degreeParallelism => _rangeLimits.AsParallel()
+                .SelectMany(rangeLimit => _delays
+                .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))))
+                .ToList();
+            }
+
+            if (nestingAsParallel == 3)
+            {
+                Result = _parallelismDegrees.AsParallel()
+                .SelectMany(degreeParallelism => _rangeLimits.AsParallel()
+                .SelectMany(rangeLimit => _delays.AsParallel()
+                .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))))
+                .ToList();
+            }
+
             ExecutionTime = stopwatch.ElapsedMilliseconds;
         }
 

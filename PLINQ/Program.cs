@@ -2,13 +2,15 @@
 
 var parallelismDegrees = new List<int>() { 5, 512 };
 
-var rangeLimits = new List<int>() { 10, 50 };
+var rangeLimits = new List<int>() { 10, 12, 15, 25, 50 };
 
 var delays = new List<int>() { 0, 1, 5 };
 
 var test = new TestPLINQ(parallelismDegrees, rangeLimits, delays);
 
 test.StartTest();
+
+Console.WriteLine($"Общее время выполнения теста: {test.ExecutionTime}");
 
 foreach (var result in test.Result.GetResultDefaultGrouping())
 {
