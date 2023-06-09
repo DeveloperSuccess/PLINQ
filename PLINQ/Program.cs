@@ -1,4 +1,4 @@
-﻿using AsParallel;
+﻿using PLINQ;
 
 var parallelismDegrees = new List<int>() { 5, 512 };
 
@@ -10,7 +10,7 @@ var test = new TestPLINQ(parallelismDegrees, rangeLimits, delays);
 
 test.StartTest();
 
-foreach (var result in test.GetResultDefaultGrouping())
+foreach (var result in test.Result.GetResultDefaultGrouping())
 {
     Console.WriteLine($"Степень параллелизма: {result.DegreeParallelism}; " +
     $"Элементов в коллекции: {result.RangeLimit}; Задержка: {result.Delay} ms; " +

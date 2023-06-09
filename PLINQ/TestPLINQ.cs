@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace AsParallel
+namespace PLINQ
 {
     internal class TestPLINQ
     {
@@ -9,6 +9,7 @@ namespace AsParallel
         private readonly IEnumerable<int> _delays = new List<int>();
 
         public IEnumerable<IterationResult> Result { get; private set; } = new List<IterationResult>();
+        public long? ExecutionTime { get; private set; } = null;
 
         internal TestPLINQ()
         {
@@ -28,17 +29,20 @@ namespace AsParallel
 
         public void StartTest()
         {
+            var stopwatch = Stopwatch.StartNew();
             Result = _parallelismDegrees.AsParallel()
                 .SelectMany(degreeParallelism => _rangeLimits
                 .SelectMany(rangeLimit => _delays
-                .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))));
+                .Select(delay => GetIterationResult(degreeParallelism, delay, rangeLimit))))
+                .ToList();
+            ExecutionTime = stopwatch.ElapsedMilliseconds;
         }
 
         private IterationResult GetIterationResult(int degreeParallelism, int delay, int rangeLimit)
         {
             var source = Enumerable.Range(1, rangeLimit);
 
-            Stopwatch executionTimeWithoutParallel = Stopwatch.StartNew();
+            var executionTimeWithoutParallel = Stopwatch.StartNew();
             source.Where(_ => Delay(delay)).ToList();
             executionTimeWithoutParallel.Stop();
 
@@ -51,24 +55,6 @@ namespace AsParallel
             return new IterationResult(degreeParallelism, delay, rangeLimit,
                 executionTimeWithoutParallel.ElapsedMilliseconds, executionTimeWithParallel.ElapsedMilliseconds,
                 difference);
-        }
-
-        public IEnumerable<IterationResult> GetResultDefaultGrouping()
-        {
-            var positiveResults = Result.Where(x => x.Difference > 0);
-
-            var groupingByRangeLimit = positiveResults
-                .GroupBy(x => x.RangeLimit)
-                .Select(x => x.Select(x => x));
-
-            var groupingByDelay = groupingByRangeLimit
-                .Select(x => x.GroupBy(x => x.Delay)
-                .Select(x => x.Select(x => x)));
-
-            var result = groupingByDelay
-                .Select(g => g.Select(d => d.Where(x => x.Difference == d.Select(f => f.Difference).Max())));
-
-            return result.SelectMany(x => x.Select(x => x.FirstOrDefault()));
         }
 
         private bool Delay(int millisecondsTimeout)
