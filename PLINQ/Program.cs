@@ -1,12 +1,6 @@
 ﻿using PLINQ;
 
-var parallelismDegrees = new List<int>() { 5, 512 };
-
-var rangeLimits = new List<int>() { 10, 12, 15, 25, 50 };
-
-var delays = new List<int>() { 0, 1, 5 };
-
-var test = new TestPLINQ(parallelismDegrees, rangeLimits, delays);
+var test = new TestPLINQ();
 
 test.StartTest();
 
