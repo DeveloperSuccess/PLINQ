@@ -1,8 +1,4 @@
-﻿using System.Diagnostics;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
-
-namespace PLINQ
+﻿namespace PLINQ
 {
     internal class TestTemplates
     {
