@@ -46,7 +46,7 @@
 
             var rangeLimits = new List<int>() { 5 };
 
-            var delays = new List<int>() { 50, 100 };
+            var delays = new List<int>() { 50, 100, 1000 };
 
             var test = new TestPLINQ(parallelismDegrees, rangeLimits, delays);
 

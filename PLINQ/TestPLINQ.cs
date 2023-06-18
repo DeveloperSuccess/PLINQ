@@ -87,10 +87,11 @@ namespace PLINQ
             source.AsParallel().WithDegreeOfParallelism(degreeParallelism).Where(_ => Delay(delay)).ToList();
             executionTimeWithParallel.Stop();
 
-            var difference = executionTimeWithParallel.ElapsedMilliseconds - executionTimeWithoutParallel.ElapsedMilliseconds;
+            var difference = executionTimeWithoutParallel.ElapsedMilliseconds - executionTimeWithParallel.ElapsedMilliseconds;
 
-            return new IterationResult(degreeParallelism, delay, rangeLimit,
-                executionTimeWithoutParallel.ElapsedMilliseconds, executionTimeWithParallel.ElapsedMilliseconds,
+            return new IterationResult(degreeParallelism, delay, rangeLimit,                
+                executionTimeWithoutParallel.ElapsedMilliseconds,
+                executionTimeWithParallel.ElapsedMilliseconds,
                 difference);
         }
 

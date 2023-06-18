@@ -3,7 +3,7 @@
     internal class IterationResult
     {
         internal IterationResult(int degreeParallelism, int delay, int rangeLimit,
-            long executionTimeWithParallel, long executionTimeWithoutParallel,
+             long executionTimeWithoutParallel, long executionTimeWithParallel,
             long difference)
         {
             DegreeParallelism = degreeParallelism;
